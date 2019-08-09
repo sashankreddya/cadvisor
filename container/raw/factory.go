@@ -67,6 +67,9 @@ func (self *rawFactory) NewContainerHandler(name string, inHostNamespace bool) (
 // The raw factory can handle any container. If --docker_only is set to true, non-docker containers are ignored except for "/" and those whitelisted by raw_cgroup_prefix_whitelist flag.
 func (self *rawFactory) CanHandleAndAccept(name string) (bool, bool, error) {
 	if name == "/" {
+		if *disableRootCgroupStats {
+			return true, false, nil
+		}
 		return true, true, nil
 	}
 	if *dockerOnly && self.rawPrefixWhiteList[0] == "" {
